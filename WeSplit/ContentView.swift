@@ -15,11 +15,14 @@ struct ContentView: View {
 
   private let currency = Locale.current.currency?.identifier ?? "USD"
   private let peopleNumbers = Array(2...100)
-  private let tipChoices = [10, 15, 20, 25, 0]
+  private let tipChoices = Array(stride(from: 5, through: 100, by: 5))
 
   private var totalAmount: Double {
-    let grandTotal = checkAmount * (1 + Double(tipPercentage) / 100)
-    return grandTotal / Double(numberOfPeople)
+    checkAmount * (1 + Double(tipPercentage) / 100)
+  }
+
+  private var amountPerPerson: Double {
+    totalAmount / Double(numberOfPeople)
   }
   
   var body: some View {
@@ -51,11 +54,15 @@ struct ContentView: View {
               Text($0, format: .percent)
             }
           }
-          .pickerStyle(.segmented)
+          .pickerStyle(.navigationLink)
+        }
+
+        Section("Total amount") {
+          Text(totalAmount, format: .currency(code: currency))
         }
 
         Section("Each one pays") {
-          Text(totalAmount, format: .currency(code: currency))
+          Text(amountPerPerson, format: .currency(code: currency))
         }
       }
       .navigationTitle("WeSplit")
